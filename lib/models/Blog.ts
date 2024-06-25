@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const ProductSchema = new mongoose.Schema({
+const BlogSchema = new mongoose.Schema({
   title: String,
   description: String,
   media: [String],
@@ -11,6 +11,6 @@ const ProductSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now },
 }, { toJSON: { getters: true } });
 
-const Product = mongoose.models.Product || mongoose.model("Product", ProductSchema);
+const Blog = mongoose.models.Blog || mongoose.model("Blog", BlogSchema);
 
-export default Product;
+export default Blog;

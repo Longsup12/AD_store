@@ -9,29 +9,29 @@ import Loader from "@/components/custom ui/Loader";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/custom ui/DataTable";
-import { columns } from "@/components/products/ProductColumns";
+import { columns } from "@/components/blogs/BlogColumns";
 
-const Products = () => {
+const Blogs = () => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState<ProductType[]>([]);
+  const [blogs, setBlogs] = useState<BlogType[]>([]);
 
-  const getProducts = async () => {
+  const getBlogs = async () => {
     try {
-      const res = await fetch("/api/products", {
+      const res = await fetch("/api/blogs", {
         method: "GET",
       });
       const data = await res.json();
-      setProducts(data);
+      setBlogs(data);
       setLoading(false);
     } catch (err) {
-      console.log("[products_GET]", err);
+      console.log("[blogs_GET]", err);
     }
   };
 
   useEffect(() => {
-    getProducts();
+    getBlogs();
   }, []);
 
   return loading ? (
@@ -39,19 +39,19 @@ const Products = () => {
   ) : (
     <div className="px-10 py-5">
       <div className="flex items-center justify-between">
-        <p className="text-heading2-bold">Products</p>
+        <p className="text-heading2-bold">Blogs</p>
         <Button
           className="bg-blue-1 text-white"
-          onClick={() => router.push("/products/new")}
+          onClick={() => router.push("/blogs/new")}
         >
           <Plus className="h-4 w-4 mr-2" />
-          Create Product
+          Create Blog
         </Button>
       </div>
       <Separator className="bg-grey-1 my-4" />
-      <DataTable columns={columns} data={products} searchKey="title" />
+      <DataTable columns={columns} data={blogs} searchKey="title" />
     </div>
   );
 };
 
-export default Products;
+export default Blogs;

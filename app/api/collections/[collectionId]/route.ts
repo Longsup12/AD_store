@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs";
 
 import { connectToDB } from "@/lib/mongoDB";
 import Collection from "@/lib/models/Collection";
-import Product from "@/lib/models/Product";
+import Blog from "@/lib/models/Blog";
 
 export const GET = async (
   req: NextRequest,
@@ -12,7 +12,7 @@ export const GET = async (
   try {
     await connectToDB();
 
-    const collection = await Collection.findById(params.collectionId).populate({ path: "products", model: Product });
+    const collection = await Collection.findById(params.collectionId).populate({ path: "blogs", model: Blog });
 
     if (!collection) {
       return new NextResponse(
@@ -83,7 +83,7 @@ export const DELETE = async (
 
     await Collection.findByIdAndDelete(params.collectionId);
 
-    await Product.updateMany(
+    await Blog.updateMany(
       { collections: params.collectionId },
       { $pull: { collections: params.collectionId } }
     );

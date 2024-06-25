@@ -1,11 +1,11 @@
 
-import Product from "../models/Product";
+import Blog from "../models/Blog";
 import Collection from "../models/Collection";
 import { connectToDB } from "../mongoDB"
 
 export const getTotalBlogs = async () => {
   await connectToDB();
-  const blogs = await Product.find()
+  const blogs = await Blog.find()
   const totalBlogs = blogs.length
   return totalBlogs
 }

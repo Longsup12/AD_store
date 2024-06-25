@@ -3,10 +3,10 @@ type CollectionType = {
   title: string;
   description: string;
   image: string;
-  blog: ProductType[];
+  blogs: BlogType[];
 }
 
-type ProductType = {
+type BlogType = {
   _id: string;
   title: string;
   description: string;

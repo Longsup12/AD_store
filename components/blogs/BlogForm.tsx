@@ -34,11 +34,11 @@ const formSchema = z.object({
   tags: z.array(z.string()),
 });
 
-interface ProductFormProps {
-  initialData?: ProductType | null; //Must have "?" to make it optional
+interface BlogFormProps {
+  initialData?: BlogType | null; //Must have "?" to make it optional
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
+const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
@@ -95,20 +95,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       const url = initialData
-        ? `/api/products/${initialData._id}`
-        : "/api/products";
+        ? `/api/blogs/${initialData._id}`
+        : "/api/blogs";
       const res = await fetch(url, {
         method: "POST",
         body: JSON.stringify(values),
       });
       if (res.ok) {
         setLoading(false);
-        toast.success(`Product ${initialData ? "updated" : "created"}`);
-        window.location.href = "/products";
-        router.push("/products");
+        toast.success(`Blog ${initialData ? "updated" : "created"}`);
+        window.location.href = "/blogs";
+        router.push("/blogs");
       }
     } catch (err) {
-      console.log("[products_POST]", err);
+      console.log("[blogs_POST]", err);
       toast.error("Something went wrong! Please try again.");
     }
   };
@@ -120,7 +120,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
       {initialData ? (
         <div className="flex items-center justify-between">
           <p className="text-heading2-bold">Edit Blog</p>
-          <Delete id={initialData._id} item="product" />
+          <Delete id={initialData._id} item="blog" />
         </div>
       ) : (
         <p className="text-heading2-bold">Create Blog</p>
@@ -262,7 +262,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
             </Button>
             <Button
               type="button"
-              onClick={() => router.push("/products")}
+              onClick={() => router.push("/blogs")}
               className="bg-blue-1 text-white"
             >
               Discard
@@ -274,4 +274,4 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
   );
 };
 
-export default ProductForm;
+export default BlogForm;

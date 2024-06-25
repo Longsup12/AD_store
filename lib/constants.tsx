@@ -16,7 +16,7 @@ export const navLinks = [
     label: "Collections",
   },
   {
-    url: "/products",
+    url: "/blogs",
     icon: <Tag />,
     label: "Blogs",
   },

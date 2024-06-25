@@ -1,5 +1,5 @@
 import Collection from "@/lib/models/Collection";
-import Product from "@/lib/models/Product";
+import Blog from "@/lib/models/Blog";
 import { connectToDB } from "@/lib/mongoDB";
 import { auth } from "@clerk/nextjs";
 
@@ -7,23 +7,23 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (
   req: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: { blogId: string } }
 ) => {
   try {
     await connectToDB();
 
-    const product = await Product.findById(params.productId).populate({
+    const blog = await Blog.findById(params.blogId).populate({
       path: "collections",
       model: Collection,
     });
 
-    if (!product) {
+    if (!blog) {
       return new NextResponse(
-        JSON.stringify({ message: "Product not found" }),
+        JSON.stringify({ message: "Blog not found" }),
         { status: 404 }
       );
     }
-    return new NextResponse(JSON.stringify(product), {
+    return new NextResponse(JSON.stringify(blog), {
       status: 200,
       headers: {
         "Access-Control-Allow-Origin": `${process.env.ECOMMERCE_STORE_URL}`,
@@ -32,14 +32,14 @@ export const GET = async (
       },
     });
   } catch (err) {
-    console.log("[productId_GET]", err);
+    console.log("[blogId_GET]", err);
     return new NextResponse("Internal error", { status: 500 });
   }
 };
 
 export const POST = async (
   req: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: { blogId: string } }
 ) => {
   try {
     const { userId } = auth();
@@ -50,11 +50,11 @@ export const POST = async (
 
     await connectToDB();
 
-    const product = await Product.findById(params.productId);
+    const blog = await Blog.findById(params.blogId);
 
-    if (!product) {
+    if (!blog) {
       return new NextResponse(
-        JSON.stringify({ message: "Product not found" }),
+        JSON.stringify({ message: "Blog not found" }),
         { status: 404 }
       );
     }
@@ -69,35 +69,35 @@ export const POST = async (
     } = await req.json();
 
     const addedCollections = collections.filter(
-      (collectionId: string) => !product.collections.includes(collectionId)
+      (collectionId: string) => !blog.collections.includes(collectionId)
     );
     // included in new data, but not included in the previous data
 
-    const removedCollections = product.collections.filter(
+    const removedCollections = blog.collections.filter(
       (collectionId: string) => !collections.includes(collectionId)
     );
     // included in previous data, but not included in the new data
 
     // Update collections
     await Promise.all([
-      // Update added collections with this product
+      // Update added collections with this blog
       ...addedCollections.map((collectionId: string) =>
         Collection.findByIdAndUpdate(collectionId, {
-          $push: { products: product._id },
+          $push: { blogs: blog._id },
         })
       ),
 
-      // Update removed collections without this product
+      // Update removed collections without this blog
       ...removedCollections.map((collectionId: string) =>
         Collection.findByIdAndUpdate(collectionId, {
-          $pull: { products: product._id },
+          $pull: { blogs: blog._id },
         })
       ),
     ]);
 
-    // Update product
-    const updatedProduct = await Product.findByIdAndUpdate(
-      product._id,
+    // Update blog
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      blog._id,
       {
         title,
         description,
@@ -109,18 +109,18 @@ export const POST = async (
       { new: true }
     ).populate({ path: "collections", model: Collection });
 
-    await updatedProduct.save();
+    await updatedBlog.save();
 
-    return NextResponse.json(updatedProduct, { status: 200 });
+    return NextResponse.json(updatedBlog, { status: 200 });
   } catch (err) {
-    console.log("[productId_POST]", err);
+    console.log("[blogId_POST]", err);
     return new NextResponse("Internal error", { status: 500 });
   }
 };
 
 export const DELETE = async (
   req: NextRequest,
-  { params }: { params: { productId: string } }
+  { params }: { params: { blogId: string } }
 ) => {
   try {
     const { userId } = auth();
@@ -131,31 +131,31 @@ export const DELETE = async (
 
     await connectToDB();
 
-    const product = await Product.findById(params.productId);
+    const blog = await Blog.findById(params.blogId);
 
-    if (!product) {
+    if (!blog) {
       return new NextResponse(
-        JSON.stringify({ message: "Product not found" }),
+        JSON.stringify({ message: "Blog not found" }),
         { status: 404 }
       );
     }
 
-    await Product.findByIdAndDelete(product._id);
+    await Blog.findByIdAndDelete(blog._id);
 
     // Update collections
     await Promise.all(
-      product.collections.map((collectionId: string) =>
+      blog.collections.map((collectionId: string) =>
         Collection.findByIdAndUpdate(collectionId, {
-          $pull: { products: product._id },
+          $pull: { blogs: blog._id },
         })
       )
     );
 
-    return new NextResponse(JSON.stringify({ message: "Product deleted" }), {
+    return new NextResponse(JSON.stringify({ message: "Blog deleted" }), {
       status: 200,
     });
   } catch (err) {
-    console.log("[productId_DELETE]", err);
+    console.log("[blogId_DELETE]", err);
     return new NextResponse("Internal error", { status: 500 });
   }
 };

@@ -1,4 +1,4 @@
-import Product from "@/lib/models/Product";
+import Blog from "@/lib/models/Blog";
 import { connectToDB } from "@/lib/mongoDB";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -6,7 +6,7 @@ export const GET = async (req: NextRequest, { params }: { params: { query: strin
   try {
     await connectToDB()
 
-    const searchedProducts = await Product.find({
+    const searchedBlogs = await Blog.find({
       $or: [
         { title: { $regex: params.query, $options: "i" } },
         { category: { $regex: params.query, $options: "i" } },
@@ -14,7 +14,7 @@ export const GET = async (req: NextRequest, { params }: { params: { query: strin
       ]
     })
 
-    return NextResponse.json(searchedProducts, { status: 200 })
+    return NextResponse.json(searchedBlogs, { status: 200 })
   } catch (err) {
     console.log("[search_GET]", err)
     return new NextResponse("Internal Server Error", { status: 500 })
