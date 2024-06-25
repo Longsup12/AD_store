@@ -27,14 +27,6 @@ export const columns: ColumnDef<ProductType>[] = [
     cell: ({ row }) => row.original.collections.map((collection) => collection.title).join(", "),
   },
   {
-    accessorKey: "price",
-    header: "Price ($)",
-  },
-  {
-    accessorKey: "expense",
-    header: "Expense ($)",
-  },
-  {
     id: "actions",
     cell: ({ row }) => <Delete item="product" id={row.original._id} />,
   },
