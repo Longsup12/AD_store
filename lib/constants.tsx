@@ -1,4 +1,5 @@
 import {
+  Image,
   LayoutDashboard,
   Shapes,
   Tag,
@@ -20,4 +21,9 @@ export const navLinks = [
     icon: <Tag />,
     label: "Blogs",
   },
+  {
+    url: "/banners",
+    icon: <Image />,
+    label: "Banners",
+  }
 ];
