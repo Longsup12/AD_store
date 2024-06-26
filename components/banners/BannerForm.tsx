@@ -26,7 +26,7 @@ const formSchema = z.object({
   title: z.string().min(2).max(20),
   diaryTittle: z.string().min(2).max(50),
   headBanner: z.string(),
-  diaryBanner: z.array(z.string()),
+  diaryBanner:  z.string(),
   diaryDescription: z.string().min(2).max(50).trim(),
   midBanner: z.string(),
   avatar: z.string(),
@@ -50,7 +50,7 @@ const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
       title: "",
       diaryTittle: "",
       headBanner: "",
-      diaryBanner: [],
+      diaryBanner: "",
       diaryDescription: "",
       midBanner: "",
       avatar: "",
@@ -149,6 +149,23 @@ const BannerForm: React.FC<BannerFormProps> = ({ initialData }) => {
                     value={field.value ? [field.value] : []}
                     onChange={(url) => field.onChange(url)}
                     onRemove={() => field.onChange("")}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="diaryBanner"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Diary Banner</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                     value={field.value ? [field.value] : []}
+                     onChange={(url) => field.onChange(url)}
+                     onRemove={() => field.onChange("")}
                   />
                 </FormControl>
                 <FormMessage />

@@ -4,7 +4,7 @@ const BannerSchema = new mongoose.Schema({
     title: String,
     headBanner: String,
     diaryTittle: String,
-    diaryBanner: [String],
+    diaryBanner: String,
     diaryDescription: String,
     midBanner: String,
     avatar: String,
