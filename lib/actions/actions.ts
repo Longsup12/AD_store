@@ -18,3 +18,4 @@ export const getTotalCollections = async () => {
   return totalCollections
 }
 
+ 
