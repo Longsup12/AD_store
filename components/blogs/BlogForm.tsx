@@ -16,7 +16,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "../ui/textarea";
 import ImageUpload from "../custom ui/ImageUpload";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -24,6 +23,8 @@ import Delete from "../custom ui/Delete";
 import MultiText from "../custom ui/MultiText";
 import MultiSelect from "../custom ui/MultiSelect";
 import Loader from "../custom ui/Loader";
+import { Editor } from "@tinymce/tinymce-react";
+import { CldUploadWidget } from "next-cloudinary";
 
 const formSchema = z.object({
   title: z.string().min(2).max(20),
@@ -113,6 +114,54 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
     }
   };
 
+  const handleEditorChange = (content: string, editor: any) => {
+    form.setValue("description", content);
+  };
+
+  function handleImageUpload(
+    blobInfo: any,
+    progress: (percent: number) => void
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
+  
+      xhr.withCredentials = false;
+      xhr.open('POST', 'https://api.cloudinary.com/v1_1/dzyuy9xpv/upload');
+  
+      xhr.upload.onprogress = (e) => {
+        progress(e.loaded / e.total * 100);
+      };
+  
+      xhr.onload = () => {
+        if (xhr.status === 403) {
+          reject({ message: 'HTTP Error: ' + xhr.status, remove: true });
+          return;
+        }
+  
+        if (xhr.status < 200 || xhr.status >= 300) {
+          reject('HTTP Error: ' + xhr.status);
+          return;
+        }
+  
+        const json = JSON.parse(xhr.responseText);
+
+        console.log("json",json)
+  
+        if (!json || typeof json.secure_url !== 'string') {
+          reject('Invalid JSON: ' + xhr.responseText);
+          return;
+        }
+        resolve(json.secure_url); // Ensure this is a string
+      };
+  
+      formData.append('file', blobInfo.blob(), blobInfo.filename());
+      formData.append('upload_preset', 'x2yetvhu');
+  
+      xhr.send(formData);
+    });
+  }
+
   return loading ? (
     <Loader />
   ) : (
@@ -152,11 +201,17 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="Description"
-                    {...field}
-                    rows={5}
-                    onKeyDown={handleKeyPress}
+                  <Editor
+                  apiKey='nggf5yvmuu1hhdzjonfkow18e9we92h2ko6ki7pz90aeed2q'
+                    initialValue={field.value}
+                    init={{
+                      height: 500,
+                      menubar: false,
+                      plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate mentions tableofcontents footnotes mergetags autocorrect typography inlinecss markdown',
+                      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                      images_upload_handler: handleImageUpload,
+                    }}
+                    onEditorChange={handleEditorChange}
                   />
                 </FormControl>
                 <FormMessage className="text-red-1" />
