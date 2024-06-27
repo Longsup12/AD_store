@@ -27,7 +27,7 @@ const formSchema = z.object({
   diaryTittle: z.string().min(2).max(50),
   headBanner: z.string(),
   diaryBanner:  z.string(),
-  diaryDescription: z.string().min(2).max(50).trim(),
+  diaryDescription: z.string().min(2).max(1000).trim(),
   midBanner: z.string(),
   avatar: z.string(),
   isActive: z.boolean(),
