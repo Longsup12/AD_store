@@ -27,8 +27,8 @@ import { Editor } from "@tinymce/tinymce-react";
 import { CldUploadWidget } from "next-cloudinary";
 
 const formSchema = z.object({
-  title: z.string().min(2).max(20),
-  description: z.string().min(2).max(500).trim(),
+  title: z.string().min(2),
+  description: z.string().min(2).trim(),
   media: z.array(z.string()),
   category: z.string(),
   collections: z.array(z.string()),
