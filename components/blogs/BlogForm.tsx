@@ -203,7 +203,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData }) => {
                 <FormControl>
                   <Editor
                   apiKey='nggf5yvmuu1hhdzjonfkow18e9we92h2ko6ki7pz90aeed2q'
-                    initialValue={field.value}
+                    value={field.value}
                     init={{
                       height: 500,
                       menubar: false,
